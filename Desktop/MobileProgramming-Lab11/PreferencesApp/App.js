@@ -10,7 +10,10 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 const Stack = createNativeStackNavigator();
 
 function AppNavigator() {
-	const { user } = useAuth();
+	const { user, isLoading } = useAuth();
+
+	// ⛔ Prevent screen flash before AsyncStorage loads
+	if (isLoading) return null;
 
 	return (
 		<NavigationContainer>

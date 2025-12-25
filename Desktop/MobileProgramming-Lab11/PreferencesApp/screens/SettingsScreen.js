@@ -1,40 +1,60 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { useTheme } from "../hooks/useTheme";
+import { getThemeColors } from "../theme";
 
 export default function SettingsScreen() {
 	const { theme, toggleTheme } = useTheme();
-	const isDark = theme === "dark";
+	const c = getThemeColors(theme);
 
 	return (
-		<View style={[styles.container, isDark ? styles.darkBg : styles.lightBg]}>
-			<Text style={[styles.title, isDark ? styles.darkText : styles.lightText]}>
-				Settings
-			</Text>
+		<View style={[styles.screen, { backgroundColor: c.bg }]}>
+			<View style={[styles.card, { backgroundColor: c.card }]}>
+				<Text style={[styles.title, { color: c.text }]}>Settings</Text>
+				<Text style={[styles.subtitle, { color: c.muted }]}>
+					Customize your experience
+				</Text>
 
-			<Text style={[styles.text, isDark ? styles.darkText : styles.lightText]}>
-				Current theme: {theme}
-			</Text>
+				<View style={styles.row}>
+					<View style={{ flex: 1 }}>
+						<Text style={[styles.label, { color: c.text }]}>Theme</Text>
+						<Text style={[styles.value, { color: c.muted }]}>Current: {theme}</Text>
+					</View>
 
-			<Pressable style={styles.button} onPress={toggleTheme}>
-				<Text style={styles.buttonText}>Toggle Theme</Text>
-			</Pressable>
+					<Pressable
+						onPress={toggleTheme}
+						style={({ pressed }) => [
+							styles.pill,
+							{ backgroundColor: c.primary, opacity: pressed ? 0.85 : 1 },
+						]}
+					>
+						<Text style={styles.pillText}>Toggle</Text>
+					</Pressable>
+				</View>
+
+				<Text style={[styles.hint, { color: c.muted }]}>
+					Tip: Refresh the page — your theme stays saved.
+				</Text>
+			</View>
 		</View>
 	);
 }
 
 const styles = StyleSheet.create({
-	container: { flex: 1, justifyContent: "center", padding: 24, gap: 12 },
-	lightBg: { backgroundColor: "#fff" },
-	darkBg: { backgroundColor: "#111" },
-	lightText: { color: "#111" },
-	darkText: { color: "#fff" },
-	title: { fontSize: 28, fontWeight: "700", textAlign: "center" },
-	text: { fontSize: 18, textAlign: "center" },
-	button: {
-		backgroundColor: "#2f6fed",
-		padding: 12,
-		borderRadius: 10,
-		alignItems: "center",
+	screen: { flex: 1, padding: 20, justifyContent: "center" },
+	card: {
+		borderRadius: 18,
+		padding: 18,
+		shadowColor: "#000",
+		shadowOpacity: 0.08,
+		shadowRadius: 16,
+		elevation: 3,
 	},
-	buttonText: { color: "white", fontWeight: "700" },
+	title: { fontSize: 26, fontWeight: "800" },
+	subtitle: { marginTop: 6, fontSize: 14 },
+	row: { marginTop: 18, flexDirection: "row", alignItems: "center", gap: 12 },
+	label: { fontSize: 16, fontWeight: "700" },
+	value: { marginTop: 2, fontSize: 13 },
+	pill: { paddingVertical: 10, paddingHorizontal: 14, borderRadius: 999 },
+	pillText: { color: "white", fontWeight: "800" },
+	hint: { marginTop: 16, fontSize: 12 },
 });
